@@ -11,18 +11,22 @@ func TestHeaderSliceCreation(t *testing.T) {
 	t.Logf("Generated Result: \n%v", result)
 
 	expectedResult := []string{"first", "second", "third"}
+
+	// Test that the value was actually created.
 	if result == nil {
 		t.Errorf("Test CSV headers returned nil\n", expectedResult)
 	} else {
 		t.Log("Test CSV headers generated and are not nil")
 	}
 
+	// Test that there are as many generated headers as we expect.
 	if len(expectedResult) > len(result) {
 		t.Errorf("Resulting header slice length is %v, which is %v less than expected\n", len(result), len(expectedResult)-len(result))
 	} else if len(expectedResult) < len(result) {
 		t.Errorf("Resulting header slice length is %v, which is %v more than expected\n", len(result), len(result)-len(expectedResult))
 	}
 
+	// Check equality of the generated header slice and our expected result.
 	if !reflect.DeepEqual(result, expectedResult) {
 		t.Errorf("Resulting header slice does not equal the expected result:\n\n%v\n\t!=\n%v\n", result, expectedResult)
 	}
@@ -36,10 +40,12 @@ func TestHeaderMapCreation(t *testing.T) {
 		"third":  2,
 	}
 
+	// Test that the value was actually created.
 	if result == nil {
 		t.Errorf("Test CSV header map returned nil\n", expectedResult)
 	}
 
+	// Test that every value matches up with the expected result.
 	for key, value := range expectedResult {
 		if _, ok := result[key]; !ok {
 			t.Errorf("The following key is not located in the resulting header map: %v\n", key)
@@ -48,6 +54,8 @@ func TestHeaderMapCreation(t *testing.T) {
 		}
 	}
 }
+
+// TODO: Test the various functions.
 
 func BenchmarkSmallFileHandling(b *testing.B) {
 	New("test_csvs/test.csv")

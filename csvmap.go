@@ -18,7 +18,7 @@ func closeIfError(err error) {
 	}
 }
 
-func (m *CSVMap) createHeaderIndexMap(headers []string) map[string]int {
+func (m *CSVMap) CreateHeaderIndexMap(headers []string) map[string]int {
 	headerIndexMap := make(map[string]int, len(headers))
 
 	for index, header := range headers {
@@ -58,34 +58,23 @@ func New(filePath string) *CSVMap {
 		log.Fatal(err)
 	}
 	defer inputCSV.Close()
-
 	reader := csv.NewReader(inputCSV)
+
+	// Create our resulting struct
+	output := &CSVMap{}
+
 	inputHeaders, err := reader.Read()
 	closeIfError(err)
 
-	// Create map of header names to array indices
-	headerMap := make(map[string]int, len(inputHeaders))
-
-	for index, header := range inputHeaders {
-		headerMap[header] = index
-	}
+	// Use our methods (defined above) to populate our struct fields
+	output.Headers = inputHeaders
+	output.HeaderIndexMap = output.CreateHeaderIndexMap(inputHeaders)
 
 	remainderOfFile, err := reader.ReadAll()
 	closeIfError(err)
 
-	// Map the rest of the file
-	fileContents := []map[string]string{}
-	for _, row := range remainderOfFile {
-		newRow := map[string]string{}
-		for header, index := range headerMap {
-			newRow[header] = row[index]
-		}
-		fileContents = append(fileContents, newRow)
-	}
+	output.CreateAllMaps(remainderOfFile, output.HeaderIndexMap)
 
-	return &CSVMap{
-		FileContents:   fileContents,
-		Headers:        inputHeaders,
-		HeaderIndexMap: headerMap,
-	}
+	// We're done!
+	return output
 }
