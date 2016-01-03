@@ -101,7 +101,7 @@ func New(filePath string) *CSVMap {
 	remainderOfFile, err := reader.ReadAll()
 	closeIfError(err)
 
-	output.CreateAllMaps(remainderOfFile, output.HeaderIndexMap)
+	output.CreateAllMaps(remainderOfFile)
 
 	return output
 }
