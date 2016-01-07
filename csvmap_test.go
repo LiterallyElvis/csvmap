@@ -7,7 +7,7 @@ import (
 
 // Test functions using file path approach.
 func TestHeaderSliceCreation(t *testing.T) {
-	csvMap, err := New("test_csvs/test.csv")
+	csvMap, err := NewReader("test_csvs/test.csv")
 	if err != nil {
 		t.Errorf("Error returned: %v", err)
 	}
@@ -19,7 +19,7 @@ func TestHeaderSliceCreation(t *testing.T) {
 
 	// Test that the value was actually created.
 	if result == nil {
-		t.Errorf("Test CSV headers returned nil\n", expectedResult)
+		t.Error("Test CSV headers returned nil\n", expectedResult)
 	} else {
 		t.Log("Test CSV headers generated and are not nil")
 	}
@@ -38,7 +38,7 @@ func TestHeaderSliceCreation(t *testing.T) {
 }
 
 func TestHeaderMapCreation(t *testing.T) {
-	csvMap, err := New("test_csvs/test.csv")
+	csvMap, err := NewReader("test_csvs/test.csv")
 	if err != nil {
 		t.Errorf("Error returned: %v", err)
 	}
@@ -52,7 +52,7 @@ func TestHeaderMapCreation(t *testing.T) {
 
 	// Test that the value was actually created.
 	if result == nil {
-		t.Errorf("Test CSV header map returned nil\n", expectedResult)
+		t.Error("Test CSV header map returned nil\n", expectedResult)
 	}
 
 	// Test that every value matches up with the expected result.
@@ -67,5 +67,5 @@ func TestHeaderMapCreation(t *testing.T) {
 
 // Benchmarks for the file path approach.
 func BenchmarkSmallFileHandlingViaFilePath(b *testing.B) {
-	New("test_csvs/test.csv")
+	NewReader("test_csvs/test.csv")
 }

@@ -76,7 +76,7 @@ func (m *CSVMap) ReadAll() ([]map[string]string, error) {
 }
 
 // New returns a new CSVMap struct.
-func New(filePath string) (*CSVMap, error) {
+func NewReader(filePath string) (*CSVMap, error) {
 	// Open our file.
 	inputCSV, err := os.Open(filePath)
 	if err != nil {
