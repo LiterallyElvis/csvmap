@@ -69,7 +69,3 @@ func TestHeaderMapCreation(t *testing.T) {
 func BenchmarkSmallFileHandlingViaFilePath(b *testing.B) {
 	New("test_csvs/test.csv")
 }
-
-func BenchmarkLargeFileHandlingViaFilePath(b *testing.B) {
-	New("test_csvs/FakeNameGeneratorFile.csv")
-}
