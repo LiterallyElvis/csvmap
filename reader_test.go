@@ -1,16 +1,19 @@
 package cartogopher
 
 import (
+	"os"
 	"reflect"
 	"testing"
 )
 
 // Test functions using file path approach.
 func TestHeaderSliceCreation(t *testing.T) {
-	csvMap, err := NewReader("test_csvs/test.csv")
+	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
 		t.Errorf("Error returned: %v", err)
 	}
+	csvMap, err := NewReader(inputCSV)
+
 	result := csvMap.Headers
 
 	t.Logf("Generated Result: \n%v", result)
@@ -38,10 +41,11 @@ func TestHeaderSliceCreation(t *testing.T) {
 }
 
 func TestHeaderMapCreation(t *testing.T) {
-	csvMap, err := NewReader("test_csvs/test.csv")
+	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
 		t.Errorf("Error returned: %v", err)
 	}
+	csvMap, err := NewReader(inputCSV)
 
 	result := csvMap.HeaderIndexMap
 	expectedResult := map[string]int{
@@ -67,5 +71,9 @@ func TestHeaderMapCreation(t *testing.T) {
 
 // Benchmarks for the file path approach.
 func BenchmarkSmallFileHandlingViaFilePath(b *testing.B) {
-	NewReader("test_csvs/test.csv")
+	inputCSV, err := os.Open("test_csvs/test.csv")
+	if err != nil {
+		b.Errorf("Error returned: %v", err)
+	}
+	NewReader(inputCSV)
 }
