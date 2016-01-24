@@ -10,11 +10,14 @@ import (
 func TestHeaderSliceCreation(t *testing.T) {
 	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
-		t.Errorf("Error returned: %v", err)
+		t.Errorf("Error returned while opening file: %v", err)
 	}
-	csvMap, err := NewReader(inputCSV)
+	reader, err := NewReader(inputCSV)
+	if err != nil {
+		t.Errorf("Error returned while creating new reader: %v", err)
+	}
 
-	result := csvMap.Headers
+	result := reader.Headers
 
 	t.Logf("Generated Result: \n%v", result)
 
@@ -43,11 +46,14 @@ func TestHeaderSliceCreation(t *testing.T) {
 func TestHeaderMapCreation(t *testing.T) {
 	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
-		t.Errorf("Error returned: %v", err)
+		t.Errorf("Error returned while opening file: %v", err)
 	}
-	csvMap, err := NewReader(inputCSV)
+	reader, err := NewReader(inputCSV)
+	if err != nil {
+		t.Errorf("Error returned while creating new reader: %v", err)
+	}
 
-	result := csvMap.HeaderIndexMap
+	result := reader.HeaderIndexMap
 	expectedResult := map[string]int{
 		"first":  0,
 		"second": 1,
@@ -69,11 +75,53 @@ func TestHeaderMapCreation(t *testing.T) {
 	}
 }
 
+func TestFileReading(t *testing.T) {
+	inputCSV, err := os.Open("test_csvs/test.csv")
+	if err != nil {
+		t.Errorf("Error returned while opening file: %v", err)
+	}
+	reader, err := NewReader(inputCSV)
+	if err != nil {
+		t.Errorf("Error returned while creating new reader: %v", err)
+	}
+
+	expectedCSVMapRows := []map[string]string{
+		{
+			"first":  "one",
+			"second": "two",
+			"third":  "three",
+		},
+		{
+			"first":  "a",
+			"second": "b",
+			"third":  "c",
+		},
+		{
+			"first":  "Athos",
+			"second": "Aramis",
+			"third":  "Porthos",
+		},
+	}
+
+	producedCSVMapRows, err := reader.ReadAll()
+	if err != nil {
+		t.Errorf("Error returned while reading all rows: %v", err)
+	}
+
+	for index, expectedRow := range expectedCSVMapRows {
+		for header, value := range expectedRow {
+			if producedCSVMapRows[index][header] != value {
+				t.Errorf("Mismatch in expected value:\n\t'%v': %v\nvs. produced value: %v", header, value, producedCSVMapRows[index][header])
+			}
+		}
+	}
+}
+
 // Benchmarks for the file path approach.
 func BenchmarkSmallFileHandlingViaFilePath(b *testing.B) {
 	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
-		b.Errorf("Error returned: %v", err)
+		b.Errorf("Error returned while opening file: %v", err)
 	}
 	NewReader(inputCSV)
 }

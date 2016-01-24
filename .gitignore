@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Work Environment Stuff
+.vscode
+
+# Yes I use VS Code, it's pretty cool.
