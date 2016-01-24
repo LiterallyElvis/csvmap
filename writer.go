@@ -13,19 +13,19 @@ type MapWriter struct {
 	Writer          *csv.Writer
 }
 
-func (m *MapWriter) createOutputHeaderMap() {
+func (w *MapWriter) createOutputHeaderMap() {
 	result := map[string]int{}
-	for index, header := range m.InputHeaders {
+	for index, header := range w.InputHeaders {
 		result[header] = index
 	}
-	m.OutputHeaderMap = result
+	w.OutputHeaderMap = result
 }
 
-func (m *MapWriter) createOutputSlice(row map[string]string) ([]string, error) {
-	outputSlice := make([]string, len(m.OutputHeaderMap))
+func (w *MapWriter) createOutputSlice(row map[string]string) ([]string, error) {
+	outputSlice := make([]string, len(w.OutputHeaderMap))
 	for header, value := range row {
-		if _, ok := m.OutputHeaderMap[header]; ok {
-			outputSlice[m.OutputHeaderMap[header]] = value
+		if _, ok := w.OutputHeaderMap[header]; ok {
+			outputSlice[w.OutputHeaderMap[header]] = value
 		} else {
 			return []string{}, fmt.Errorf("Provided row contains invalid header field: %v", header)
 		}
@@ -34,22 +34,22 @@ func (m *MapWriter) createOutputSlice(row map[string]string) ([]string, error) {
 }
 
 // Write recreates the built-in CSV writer's Write method
-func (m *MapWriter) Write(row map[string]string) error {
-	if len(row) > len(m.OutputHeaderMap) {
-		return fmt.Errorf("Provided row has %v fields, whereas there are only %v headers", len(row), len(m.OutputHeaderMap))
+func (w *MapWriter) Write(row map[string]string) error {
+	if len(row) > len(w.OutputHeaderMap) {
+		return fmt.Errorf("Provided row has %v fields, whereas there are only %v headers", len(row), len(w.OutputHeaderMap))
 	}
-	outputSlice, err := m.createOutputSlice(row)
+	outputSlice, err := w.createOutputSlice(row)
 	if err != nil {
 		return err
 	}
-	err = m.Writer.Write(outputSlice)
+	err = w.Writer.Write(outputSlice)
 	return err
 }
 
 // WriteAll rereates the built-in CSV writer's WriteAll method
-func (m *MapWriter) WriteAll(rows []map[string]string) error {
+func (w *MapWriter) WriteAll(rows []map[string]string) error {
 	for _, row := range rows {
-		err := m.Write(row)
+		err := w.Write(row)
 		if err != nil {
 			return err
 		}
@@ -58,8 +58,8 @@ func (m *MapWriter) WriteAll(rows []map[string]string) error {
 }
 
 // Flush simply calls the built-in CSV writer's flush method
-func (m *MapWriter) Flush() {
-	m.Writer.Flush()
+func (w *MapWriter) Flush() {
+	w.Writer.Flush()
 }
 
 // NewWriter creates a new writer

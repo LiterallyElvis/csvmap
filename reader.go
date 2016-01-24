@@ -22,14 +22,14 @@ type MapReader struct {
 // 	---------------------
 // Go's generated array for the header row will be [ "one", "two", "three" ].
 // Cartogopher's generated map for the header row will be { "one": 1, "two": 2, "three": 3 }
-func (m *MapReader) CreateHeaderIndexMap(headers []string) map[string]int {
-	headerIndexMap := make(map[string]int, len(headers))
+func (m *MapReader) CreateHeaderIndexMap() {
+	headerIndexMap := make(map[string]int, len(m.Headers))
 
-	for index, header := range headers {
+	for index, header := range m.Headers {
 		headerIndexMap[header] = index
 	}
 
-	return headerIndexMap
+	m.HeaderIndexMap = headerIndexMap
 }
 
 // CreateRowMap takes a given CSV array and returns a map of column names to the values contained therein.
@@ -92,7 +92,7 @@ func NewReader(file *os.File) (*MapReader, error) {
 	// Use our methods (defined above) to populate our struct fields
 	output.Headers = inputHeaders
 	output.Reader = reader
-	output.HeaderIndexMap = output.CreateHeaderIndexMap(inputHeaders)
+	output.CreateHeaderIndexMap()
 
 	return output, nil
 }
