@@ -57,7 +57,7 @@ func (m *MapReader) CreateRowMap(csvRow []string) map[string]string {
 // Read mimics the built-in CSV reader Read method
 func (m *MapReader) Read() (map[string]string, error) {
 	csvRow, err := m.Reader.Read()
-	if err != nil {
+		if err != nil {
 		return nil, err
 	}
 	return m.CreateRowMap(csvRow), nil
@@ -65,7 +65,7 @@ func (m *MapReader) Read() (map[string]string, error) {
 
 // ReadAll mimics the built-in CSV reader ReadAll method
 func (m *MapReader) ReadAll() ([]map[string]string, error) {
-	records, err := m.Reader.ReadAll()
+	records, err := m.Reader.ReadAll();
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func NewReader(file *os.File) (*MapReader, error) {
 	reader := csv.NewReader(file)
 
 	// Create our resulting struct
-	output := &MapReader{}
+output := &MapReader{}
 
 	inputHeaders, err := reader.Read()
 	if err != nil {
@@ -91,6 +91,8 @@ func NewReader(file *os.File) (*MapReader, error) {
 
 	// Use our methods (defined above) to populate our struct fields
 	output.Headers = inputHeaders
+	
+	
 	output.Reader = reader
 	output.HeaderIndexMap = output.CreateHeaderIndexMap(inputHeaders)
 
