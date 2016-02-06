@@ -21,7 +21,7 @@ func (w *MapWriter) createOutputHeaderMap() {
 	w.OutputHeaderMap = result
 }
 
-func (w *MapWriter) createOutputSlice(row map[string]string) ([]string, error) {
+func (w MapWriter) createOutputSlice(row map[string]string) ([]string, error) {
 	outputSlice := make([]string, len(w.OutputHeaderMap))
 	for header, value := range row {
 		if _, ok := w.OutputHeaderMap[header]; ok {
@@ -34,7 +34,7 @@ func (w *MapWriter) createOutputSlice(row map[string]string) ([]string, error) {
 }
 
 // Write recreates the built-in CSV writer's Write method
-func (w *MapWriter) Write(row map[string]string) error {
+func (w MapWriter) Write(row map[string]string) error {
 	if len(row) > len(w.OutputHeaderMap) {
 		return fmt.Errorf("Provided row has %v fields, whereas there are only %v headers", len(row), len(w.OutputHeaderMap))
 	}
@@ -47,7 +47,7 @@ func (w *MapWriter) Write(row map[string]string) error {
 }
 
 // WriteAll rereates the built-in CSV writer's WriteAll method
-func (w *MapWriter) WriteAll(rows []map[string]string) error {
+func (w MapWriter) WriteAll(rows []map[string]string) error {
 	for _, row := range rows {
 		err := w.Write(row)
 		if err != nil {

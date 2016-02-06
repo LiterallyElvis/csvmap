@@ -45,7 +45,7 @@ func (m *MapReader) CreateHeaderIndexMap() {
 // 		"two": "B",
 // 		"three": "C",
 // 	}
-func (m *MapReader) CreateRowMap(csvRow []string) map[string]string {
+func (m MapReader) CreateRowMap(csvRow []string) map[string]string {
 	result := map[string]string{}
 	for header, index := range m.HeaderIndexMap {
 		result[header] = csvRow[index]
@@ -55,7 +55,7 @@ func (m *MapReader) CreateRowMap(csvRow []string) map[string]string {
 }
 
 // Read mimics the built-in CSV reader Read method
-func (m *MapReader) Read() (map[string]string, error) {
+func (m MapReader) Read() (map[string]string, error) {
 	csvRow, err := m.Reader.Read()
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (m *MapReader) Read() (map[string]string, error) {
 }
 
 // ReadAll mimics the built-in CSV reader ReadAll method
-func (m *MapReader) ReadAll() ([]map[string]string, error) {
+func (m MapReader) ReadAll() ([]map[string]string, error) {
 	records, err := m.Reader.ReadAll()
 	if err != nil {
 		return nil, err
