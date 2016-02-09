@@ -1,4 +1,4 @@
-# Cartogopher [![Build Status](https://travis-ci.org/LiterallyElvis/cartogopher.svg?branch=master)](https://travis-ci.org/LiterallyElvis/cartogopher)
+# Cartogopher [![Build Status](https://travis-ci.org/LiterallyElvis/cartogopher.svg?branch=master)](https://travis-ci.org/LiterallyElvis/cartogopher) [![Go Report Card](https://goreportcard.com/badge/github.com/LiterallyElvis/cartogopher)](https://goreportcard.com/report/github.com/LiterallyElvis/cartogopher)
 A super small library to read CSVs as maps instead of arrays in golang
 
 ## Usage
