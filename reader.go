@@ -2,7 +2,7 @@ package cartogopher
 
 import (
 	"encoding/csv"
-	"os"
+	"io"
 )
 
 // MapReader contains all our necessary data for the various methods to function
@@ -77,7 +77,7 @@ func (m MapReader) ReadAll() ([]map[string]string, error) {
 }
 
 // NewReader returns a new MapReader struct
-func NewReader(file *os.File) (*MapReader, error) {
+func NewReader(file io.Reader) (*MapReader, error) {
 	// Create our reader
 	reader := csv.NewReader(file)
 
