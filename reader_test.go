@@ -2,52 +2,18 @@ package cartogopher
 
 import (
 	"os"
-	"reflect"
 	"testing"
 )
 
-// Test functions using file path approach.
-func TestHeaderSliceCreation(t *testing.T) {
-	inputCSV, err := os.Open("test_csvs/test.csv")
-	if err != nil {
-		t.Errorf("Error returned while opening file: %v", err)
-	}
-	reader, err := NewReader(inputCSV)
-	if err != nil {
-		t.Errorf("Error returned while creating new reader: %v", err)
-	}
-
-	result := reader.Headers
-
-	t.Logf("Generated Result: \n%v", result)
-
-	expectedResult := []string{"first", "second", "third"}
-
-	// Test that the value was actually created.
-	if result == nil {
-		t.Error("Test CSV headers returned nil\n", expectedResult)
-	} else {
-		t.Log("Test CSV headers generated and are not nil")
-	}
-
-	// Test that there are as many generated headers as we expect.
-	if len(expectedResult) > len(result) {
-		t.Errorf("Resulting header slice length is %v, which is %v less than expected\n", len(result), len(expectedResult)-len(result))
-	} else if len(expectedResult) < len(result) {
-		t.Errorf("Resulting header slice length is %v, which is %v more than expected\n", len(result), len(result)-len(expectedResult))
-	}
-
-	// Check equality of the generated header slice and our expected result.
-	if !reflect.DeepEqual(result, expectedResult) {
-		t.Errorf("Resulting header slice does not equal the expected result:\n\n%v\n\t!=\n%v\n", result, expectedResult)
-	}
-}
-
+// Testing creation of the header to index map
 func TestHeaderMapCreation(t *testing.T) {
+	// open our test file
 	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
 		t.Errorf("Error returned while opening file: %v", err)
 	}
+
+	// create our new Cartogopher reader
 	reader, err := NewReader(inputCSV)
 	if err != nil {
 		t.Errorf("Error returned while creating new reader: %v", err)
@@ -75,16 +41,21 @@ func TestHeaderMapCreation(t *testing.T) {
 	}
 }
 
+// Testing the entire contents fo a file
 func TestFileReading(t *testing.T) {
+	// open our test CSV
 	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
 		t.Errorf("Error returned while opening file: %v", err)
 	}
+
+	// create our new Cartogopher reader
 	reader, err := NewReader(inputCSV)
 	if err != nil {
 		t.Errorf("Error returned while creating new reader: %v", err)
 	}
 
+	// mapped contents of our demo CSV
 	expectedCSVMapRows := []map[string]string{
 		{
 			"first":  "one",
@@ -103,11 +74,13 @@ func TestFileReading(t *testing.T) {
 		},
 	}
 
+	// read all the lines in the file, as you would do with encoding/csv
 	producedCSVMapRows, err := reader.ReadAll()
 	if err != nil {
 		t.Errorf("Error returned while reading all rows: %v", err)
 	}
 
+	// assert euqality of results with expectations
 	for index, expectedRow := range expectedCSVMapRows {
 		for header, value := range expectedRow {
 			if producedCSVMapRows[index][header] != value {
@@ -118,7 +91,7 @@ func TestFileReading(t *testing.T) {
 }
 
 // Benchmarks for the file path approach.
-func BenchmarkSmallFileHandlingViaFilePath(b *testing.B) {
+func BenchmarkSmallFileHandling(b *testing.B) {
 	inputCSV, err := os.Open("test_csvs/test.csv")
 	if err != nil {
 		b.Errorf("Error returned while opening file: %v", err)

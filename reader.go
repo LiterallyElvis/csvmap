@@ -2,6 +2,7 @@ package cartogopher
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 )
 
@@ -45,6 +46,7 @@ func (m *MapReader) CreateHeaderIndexMap() {
 // 		"two": "B",
 // 		"three": "C",
 // 	}
+// Note that this requires the HeaderIndexMap to be created and not a null value.
 func (m MapReader) CreateRowMap(csvRow []string) map[string]string {
 	result := map[string]string{}
 	for header, index := range m.HeaderIndexMap {
@@ -54,7 +56,9 @@ func (m MapReader) CreateRowMap(csvRow []string) map[string]string {
 	return result
 }
 
-// Read mimics the built-in CSV reader Read method
+// Read mimics the built-in CSV reader Read method, returning one row of
+// the CSV. The only difference here being that obviously we return a
+// map instead of a slice.
 func (m MapReader) Read() (map[string]string, error) {
 	csvRow, err := m.Reader.Read()
 	if err != nil {
@@ -76,7 +80,15 @@ func (m MapReader) ReadAll() ([]map[string]string, error) {
 	return results, nil
 }
 
-// NewReader returns a new MapReader struct
+// NewReader returns a new MapReader struct. It can be created the same way
+// a regular CSV file is created, by providing it with a reference to a file
+// reader, ideally one that points to a CSV file.  I'm using an interface
+// here so that, should the need arise, you can provide your CSV to the
+// package in a variety of non-file based ways. Note that here we read the
+// first row of the file without setting any non-standard values for the
+// CSV package's Reader struct. If it becomes apparent that the ability to
+// change these parameters is vital, then I'm more than happy to figure out
+// an idiomatic way to accomplish that task.
 func NewReader(file io.Reader) (*MapReader, error) {
 	// Create our reader
 	reader := csv.NewReader(file)
@@ -93,6 +105,10 @@ func NewReader(file io.Reader) (*MapReader, error) {
 	output.Headers = inputHeaders
 	output.Reader = reader
 	output.CreateHeaderIndexMap()
+
+	if output.HeaderIndexMap == nil {
+		return nil, fmt.Errorf("error assigning header to index map for CSV file")
+	}
 
 	return output, nil
 }
